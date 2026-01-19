@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Custom Tuckbox Maker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>Tuckbox Maker</h1>
+    </header>
+
+    <main class="app-main">
+      <div id="mainArea">
+        <section class="sidebar">
+          <div class="field-group">
+            <label for="boxName">Name:</label>
+            <input id="boxName" type="text" value="TuckBox">
+          </div>
+
+          <fieldset class="field-group">
+            <legend>Dimensions</legend>
+            <div class="field-row">
+              <label for="widthMm">Width:</label>
+              <input id="widthMm" type="number" step="0.1" value="68">
+              <span class="unit">mm</span>
+            </div>
+            <div class="field-row">
+              <label for="heightMm">Height:</label>
+              <input id="heightMm" type="number" step="0.1" value="94">
+              <span class="unit">mm</span>
+            </div>
+            <div class="field-row">
+              <label for="depthMm">Thickness:</label>
+              <input id="depthMm" type="number" step="0.1" value="35">
+              <span class="unit">mm</span>
+            </div>
+            <div class="field-row unpacked-row">
+              <span>Unpacked: [mm]</span>
+              <span id="unpackedSize" class="unpacked-value"></span>
+            </div>
+          </fieldset>
+
+          <fieldset class="field-group">
+            <legend>Background</legend>
+            <div class="field-row">
+              <input id="backgroundFile" type="file" accept="image/*">
+            </div>
+            <div class="bg-preview-wrapper">
+              <img id="backgroundPreview" alt="Background preview">
+            </div>
+            <button type="button" id="clearBackground">Clear</button>
+          </fieldset>
+
+          <fieldset class="field-group">
+            <legend>Bend and cut lines</legend>
+            <div class="field-row">
+              <label>
+                <input id="bendLines" type="checkbox" checked>
+                Bend lines
+              </label>
+            </div>
+            <div class="field-row">
+              <label>
+                <input id="thumbNotch" type="checkbox" checked>
+                Thumb notch
+              </label>
+            </div>
+            <div class="field-row">
+              <label for="lineColor">Color:</label>
+              <input id="lineColor" type="color" value="#000000">
+            </div>
+          </fieldset>
+
+          <div class="button-row">
+            <button type="button" id="downloadPng">Download PNG</button>
+            <button type="button" id="printBtn">Print</button>
+          </div>
+        </section>
+
+        <section class="preview">
+          <canvas id="previewCanvas"></canvas>
+        </section>
+      </div>
+
+      <section id="faceEditor">
+        <div class="face-tabs">
+          <button type="button" class="tab-button" data-face-tab="front">Front</button>
+          <button type="button" class="tab-button" data-face-tab="back">Back</button>
+          <button type="button" class="tab-button" data-face-tab="left">Left Side</button>
+          <button type="button" class="tab-button" data-face-tab="right">Right Side</button>
+          <button type="button" class="tab-button" data-face-tab="top">Top</button>
+          <button type="button" class="tab-button" data-face-tab="bottom">Bottom</button>
+        </div>
+
+        <!-- Front -->
+        <div class="face-panel" id="face-panel-front">
+          <div class="face-row">
+            <div class="face-image">
+              <img id="face-front-thumb" class="thumb" alt="Front image preview">
+              <label class="file-label">Image
+                <input id="face-front-file" type="file" accept="image/*">
+              </label>
+            </div>
+            <div class="face-controls">
+              <div class="control-group">
+                <span class="group-label">Margin [mm]</span>
+                <div class="margin-grid">
+                  <label>Left
+                    <input type="number" step="0.5" id="face-front-margin-left" value="0">
+                  </label>
+                  <label>Right
+                    <input type="number" step="0.5" id="face-front-margin-right" value="0">
+                  </label>
+                  <label>Top
+                    <input type="number" step="0.5" id="face-front-margin-top" value="0">
+                  </label>
+                  <label>Bottom
+                    <input type="number" step="0.5" id="face-front-margin-bottom" value="0">
+                  </label>
+                </div>
+              </div>
+              <div class="control-group">
+                <label>Stretch
+                  <select id="face-front-stretch">
+                    <option value="fill">Fill</option>
+                    <option value="uniform">Uniform</option>
+                    <option value="uniformToFill">Uniform to Fill</option>
+                    <option value="none">None</option>
+                  </select>
+                </label>
+                <label>Horizontal Align
+                  <select id="face-front-alignH">
+                    <option value="left">Left</option>
+                    <option value="center" selected>Center</option>
+                    <option value="right">Right</option>
+                  </select>
+                </label>
+                <label>Vertical Align
+                  <select id="face-front-alignV">
+                    <option value="top">Top</option>
+                    <option value="center" selected>Center</option>
+                    <option value="bottom">Bottom</option>
+                  </select>
+                </label>
+                <label>Rotate [°]
+                  <input type="number" step="1" id="face-front-rotate" value="0">
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Back -->
+        <div class="face-panel" id="face-panel-back">
+          <div class="face-row">
+            <div class="face-image">
+              <img id="face-back-thumb" class="thumb" alt="Back image preview">
+              <label class="file-label">Image
+                <input id="face-back-file" type="file" accept="image/*">
+              </label>
+            </div>
+            <div class="face-controls">
+              <div class="control-group">
+                <span class="group-label">Margin [mm]</span>
+                <div class="margin-grid">
+                  <label>Left
+                    <input type="number" step="0.5" id="face-back-margin-left" value="0">
+                  </label>
+                  <label>Right
+                    <input type="number" step="0.5" id="face-back-margin-right" value="0">
+                  </label>
+                  <label>Top
+                    <input type="number" step="0.5" id="face-back-margin-top" value="0">
+                  </label>
+                  <label>Bottom
+                    <input type="number" step="0.5" id="face-back-margin-bottom" value="0">
+                  </label>
+                </div>
+              </div>
+              <div class="control-group">
+                <label>Stretch
+                  <select id="face-back-stretch">
+                    <option value="fill">Fill</option>
+                    <option value="uniform">Uniform</option>
+                    <option value="uniformToFill">Uniform to Fill</option>
+                    <option value="none">None</option>
+                  </select>
+                </label>
+                <label>Horizontal Align
+                  <select id="face-back-alignH">
+                    <option value="left">Left</option>
+                    <option value="center" selected>Center</option>
+                    <option value="right">Right</option>
+                  </select>
+                </label>
+                <label>Vertical Align
+                  <select id="face-back-alignV">
+                    <option value="top">Top</option>
+                    <option value="center" selected>Center</option>
+                    <option value="bottom">Bottom</option>
+                  </select>
+                </label>
+                <label>Rotate [°]
+                  <input type="number" step="1" id="face-back-rotate" value="0">
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Left -->
+        <div class="face-panel" id="face-panel-left">
+          <div class="face-row">
+            <div class="face-image">
+              <img id="face-left-thumb" class="thumb" alt="Left image preview">
+              <label class="file-label">Image
+                <input id="face-left-file" type="file" accept="image/*">
+              </label>
+            </div>
+            <div class="face-controls">
+              <div class="control-group">
+                <span class="group-label">Margin [mm]</span>
+                <div class="margin-grid">
+                  <label>Left
+                    <input type="number" step="0.5" id="face-left-margin-left" value="0">
+                  </label>
+                  <label>Right
+                    <input type="number" step="0.5" id="face-left-margin-right" value="0">
+                  </label>
+                  <label>Top
+                    <input type="number" step="0.5" id="face-left-margin-top" value="0">
+                  </label>
+                  <label>Bottom
+                    <input type="number" step="0.5" id="face-left-margin-bottom" value="0">
+                  </label>
+                </div>
+              </div>
+              <div class="control-group">
+                <label>Stretch
+                  <select id="face-left-stretch">
+                    <option value="fill">Fill</option>
+                    <option value="uniform">Uniform</option>
+                    <option value="uniformToFill">Uniform to Fill</option>
+                    <option value="none">None</option>
+                  </select>
+                </label>
+                <label>Horizontal Align
+                  <select id="face-left-alignH">
+                    <option value="left">Left</option>
+                    <option value="center" selected>Center</option>
+                    <option value="right">Right</option>
+                  </select>
+                </label>
+                <label>Vertical Align
+                  <select id="face-left-alignV">
+                    <option value="top">Top</option>
+                    <option value="center" selected>Center</option>
+                    <option value="bottom">Bottom</option>
+                  </select>
+                </label>
+                <label>Rotate [°]
+                  <input type="number" step="1" id="face-left-rotate" value="0">
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="face-panel" id="face-panel-right">
+          <div class="face-row">
+            <div class="face-image">
+              <img id="face-right-thumb" class="thumb" alt="Right image preview">
+              <label class="file-label">Image
+                <input id="face-right-file" type="file" accept="image/*">
+              </label>
+            </div>
+            <div class="face-controls">
+              <div class="control-group">
+                <span class="group-label">Margin [mm]</span>
+                <div class="margin-grid">
+                  <label>Left
+                    <input type="number" step="0.5" id="face-right-margin-left" value="0">
+                  </label>
+                  <label>Right
+                    <input type="number" step="0.5" id="face-right-margin-right" value="0">
+                  </label>
+                  <label>Top
+                    <input type="number" step="0.5" id="face-right-margin-top" value="0">
+                  </label>
+                  <label>Bottom
+                    <input type="number" step="0.5" id="face-right-margin-bottom" value="0">
+                  </label>
+                </div>
+              </div>
+              <div class="control-group">
+                <label>Stretch
+                  <select id="face-right-stretch">
+                    <option value="fill">Fill</option>
+                    <option value="uniform">Uniform</option>
+                    <option value="uniformToFill">Uniform to Fill</option>
+                    <option value="none">None</option>
+                  </select>
+                </label>
+                <label>Horizontal Align
+                  <select id="face-right-alignH">
+                    <option value="left">Left</option>
+                    <option value="center" selected>Center</option>
+                    <option value="right">Right</option>
+                  </select>
+                </label>
+                <label>Vertical Align
+                  <select id="face-right-alignV">
+                    <option value="top">Top</option>
+                    <option value="center" selected>Center</option>
+                    <option value="bottom">Bottom</option>
+                  </select>
+                </label>
+                <label>Rotate [°]
+                  <input type="number" step="1" id="face-right-rotate" value="0">
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top -->
+        <div class="face-panel" id="face-panel-top">
+          <div class="face-row">
+            <div class="face-image">
+              <img id="face-top-thumb" class="thumb" alt="Top image preview">
+              <label class="file-label">Image
+                <input id="face-top-file" type="file" accept="image/*">
+              </label>
+            </div>
+            <div class="face-controls">
+              <div class="control-group">
+                <span class="group-label">Margin [mm]</span>
+                <div class="margin-grid">
+                  <label>Left
+                    <input type="number" step="0.5" id="face-top-margin-left" value="0">
+                  </label>
+                  <label>Right
+                    <input type="number" step="0.5" id="face-top-margin-right" value="0">
+                  </label>
+                  <label>Top
+                    <input type="number" step="0.5" id="face-top-margin-top" value="0">
+                  </label>
+                  <label>Bottom
+                    <input type="number" step="0.5" id="face-top-margin-bottom" value="0">
+                  </label>
+                </div>
+              </div>
+              <div class="control-group">
+                <label>Stretch
+                  <select id="face-top-stretch">
+                    <option value="fill">Fill</option>
+                    <option value="uniform">Uniform</option>
+                    <option value="uniformToFill">Uniform to Fill</option>
+                    <option value="none">None</option>
+                  </select>
+                </label>
+                <label>Horizontal Align
+                  <select id="face-top-alignH">
+                    <option value="left">Left</option>
+                    <option value="center" selected>Center</option>
+                    <option value="right">Right</option>
+                  </select>
+                </label>
+                <label>Vertical Align
+                  <select id="face-top-alignV">
+                    <option value="top">Top</option>
+                    <option value="center" selected>Center</option>
+                    <option value="bottom">Bottom</option>
+                  </select>
+                </label>
+                <label>Rotate [°]
+                  <input type="number" step="1" id="face-top-rotate" value="0">
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom -->
+        <div class="face-panel" id="face-panel-bottom">
+          <div class="face-row">
+            <div class="face-image">
+              <img id="face-bottom-thumb" class="thumb" alt="Bottom image preview">
+              <label class="file-label">Image
+                <input id="face-bottom-file" type="file" accept="image/*">
+              </label>
+            </div>
+            <div class="face-controls">
+              <div class="control-group">
+                <span class="group-label">Margin [mm]</span>
+                <div class="margin-grid">
+                  <label>Left
+                    <input type="number" step="0.5" id="face-bottom-margin-left" value="0">
+                  </label>
+                  <label>Right
+                    <input type="number" step="0.5" id="face-bottom-margin-right" value="0">
+                  </label>
+                  <label>Top
+                    <input type="number" step="0.5" id="face-bottom-margin-top" value="0">
+                  </label>
+                  <label>Bottom
+                    <input type="number" step="0.5" id="face-bottom-margin-bottom" value="0">
+                  </label>
+                </div>
+              </div>
+              <div class="control-group">
+                <label>Stretch
+                  <select id="face-bottom-stretch">
+                    <option value="fill">Fill</option>
+                    <option value="uniform">Uniform</option>
+                    <option value="uniformToFill">Uniform to Fill</option>
+                    <option value="none">None</option>
+                  </select>
+                </label>
+                <label>Horizontal Align
+                  <select id="face-bottom-alignH">
+                    <option value="left">Left</option>
+                    <option value="center" selected>Center</option>
+                    <option value="right">Right</option>
+                  </select>
+                </label>
+                <label>Vertical Align
+                  <select id="face-bottom-alignV">
+                    <option value="top">Top</option>
+                    <option value="center" selected>Center</option>
+                    <option value="bottom">Bottom</option>
+                  </select>
+                </label>
+                <label>Rotate [°]
+                  <input type="number" step="1" id="face-bottom-rotate" value="0">
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
