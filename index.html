@@ -1,442 +1,498 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>Custom Tuckbox Maker</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tuckbox Maker</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="app">
     <header class="app-header">
       <h1>Tuckbox Maker</h1>
+      <div class="header-hint">
+        左側調尺寸與背景，下方選 Front / Back 等貼圖。預覽以 96 DPI 顯示；下載／列印可選更高 DPI。
+      </div>
     </header>
 
     <main class="app-main">
+      <!-- 上半：左側設定＋預覽 -->
       <div id="mainArea">
-        <section class="sidebar">
-          <div class="field-group">
-            <label for="boxName">Name:</label>
-            <input id="boxName" type="text" value="TuckBox">
-          </div>
-
+        <aside class="sidebar">
+          <!-- 尺寸 -->
           <fieldset class="field-group">
-            <legend>Dimensions</legend>
+            <legend>盒型尺寸</legend>
+
             <div class="field-row">
-              <label for="widthMm">Width:</label>
-              <input id="widthMm" type="number" step="0.1" value="68">
+              <label for="boxName">名稱</label>
+              <input id="boxName" type="text" value="TuckBox" />
+            </div>
+
+            <div class="field-row">
+              <label for="widthMm">寬</label>
+              <input id="widthMm" type="number" step="0.1" value="68" />
               <span class="unit">mm</span>
             </div>
+
             <div class="field-row">
-              <label for="heightMm">Height:</label>
-              <input id="heightMm" type="number" step="0.1" value="94">
+              <label for="heightMm">高</label>
+              <input id="heightMm" type="number" step="0.1" value="94" />
               <span class="unit">mm</span>
             </div>
+
             <div class="field-row">
-              <label for="depthMm">Thickness:</label>
-              <input id="depthMm" type="number" step="0.1" value="35">
+              <label for="depthMm">厚</label>
+              <input id="depthMm" type="number" step="0.1" value="35" />
               <span class="unit">mm</span>
             </div>
+
             <div class="field-row unpacked-row">
-              <span>Unpacked: [mm]</span>
-              <span id="unpackedSize" class="unpacked-value"></span>
+              <span>展開尺寸</span>
+              <span id="unpackedSize" class="unpacked-value">-</span>
+              <span class="unit">mm</span>
             </div>
           </fieldset>
 
+          <!-- 背景 -->
           <fieldset class="field-group">
-            <legend>Background</legend>
-            <div class="field-row">
-              <input id="backgroundFile" type="file" accept="image/*">
-            </div>
+            <legend>背景</legend>
+
+            <label class="file-label">
+              背景圖片
+              <input id="backgroundFile" type="file" accept="image/*" />
+            </label>
+
             <div class="bg-preview-wrapper">
-              <img id="backgroundPreview" alt="Background preview">
+              <img id="backgroundPreview" alt="背景預覽" />
             </div>
-            <button type="button" id="clearBackground">Clear</button>
+
+            <div class="field-row">
+              <label for="backgroundFit">鋪排</label>
+              <select id="backgroundFit">
+                <option value="cover" selected>Cover（裁切填滿）</option>
+                <option value="contain">Contain（完整顯示）</option>
+                <option value="stretch">Stretch（拉伸）</option>
+              </select>
+            </div>
+
+            <div class="field-row">
+              <label for="backgroundOpacity">透明</label>
+              <input id="backgroundOpacity" type="number" step="0.05" min="0" max="1" value="1" />
+            </div>
+
+            <div class="button-row">
+              <button id="clearBackground" type="button">清除背景</button>
+            </div>
           </fieldset>
 
+          <!-- 線條與提示 -->
           <fieldset class="field-group">
-            <legend>Bend and cut lines</legend>
+            <legend>線條與提示</legend>
+
+            <div class="field-row">
+              <label for="lineColor">線色</label>
+              <input id="lineColor" type="color" value="#000000" />
+            </div>
+
             <div class="field-row">
               <label>
-                <input id="bendLines" type="checkbox" checked>
-                Bend lines
+                <input id="bendLines" type="checkbox" checked />
+                折線（虛線）
               </label>
             </div>
+
             <div class="field-row">
               <label>
-                <input id="thumbNotch" type="checkbox" checked>
-                Thumb notch
+                <input id="thumbNotch" type="checkbox" checked />
+                上蓋指槽
               </label>
             </div>
+
             <div class="field-row">
-              <label for="lineColor">Color:</label>
-              <input id="lineColor" type="color" value="#000000">
+              <label>
+                <input id="showRuler" type="checkbox" checked />
+                50&nbsp;mm 校準尺
+              </label>
             </div>
           </fieldset>
 
-          <div class="button-row">
-            <button type="button" id="downloadPng">Download PNG</button>
-            <button type="button" id="printBtn">Print</button>
-          </div>
-        </section>
+          <!-- 輸出 -->
+          <fieldset class="field-group">
+            <legend>輸出</legend>
 
+            <div class="field-row">
+              <label for="exportDpi">輸出 DPI</label>
+              <select id="exportDpi">
+                <option value="96">96</option>
+                <option value="150">150</option>
+                <option value="300" selected>300</option>
+                <option value="600">600</option>
+              </select>
+            </div>
+
+            <div class="button-row">
+              <button id="downloadPng" type="button">下載 PNG</button>
+              <button id="printBtn" type="button">列印</button>
+            </div>
+
+            <div class="button-row">
+              <button id="resetBtn" type="button">全部重設</button>
+            </div>
+          </fieldset>
+
+          <div id="status" class="status">就緒</div>
+        </aside>
+
+        <!-- 預覽區 -->
         <section class="preview">
           <canvas id="previewCanvas"></canvas>
         </section>
       </div>
 
+      <!-- 下半：各面設定 -->
       <section id="faceEditor">
-        <div class="face-tabs">
-          <button type="button" class="tab-button" data-face-tab="front">Front</button>
-          <button type="button" class="tab-button" data-face-tab="back">Back</button>
-          <button type="button" class="tab-button" data-face-tab="left">Left Side</button>
-          <button type="button" class="tab-button" data-face-tab="right">Right Side</button>
-          <button type="button" class="tab-button" data-face-tab="top">Top</button>
-          <button type="button" class="tab-button" data-face-tab="bottom">Bottom</button>
+        <div class="face-editor-header">
+          <div class="face-title">各面圖片</div>
+          <div class="face-subtitle">
+            先選上方的 Front / Back / Left / Right / Top / Bottom，再上傳該面的圖片，調整 Fit、對齊與邊界。
+          </div>
         </div>
 
-        <!-- Front -->
+        <div class="face-tabs">
+          <button class="tab-button" type="button" data-face-tab="front">Front</button>
+          <button class="tab-button" type="button" data-face-tab="back">Back</button>
+          <button class="tab-button" type="button" data-face-tab="left">Left</button>
+          <button class="tab-button" type="button" data-face-tab="right">Right</button>
+          <button class="tab-button" type="button" data-face-tab="top">Top</button>
+          <button class="tab-button" type="button" data-face-tab="bottom">Bottom</button>
+        </div>
+
+        <!-- 下面六塊 panel 為了穩定，就完整寫出來（id 規則一致） -->
+        <!-- FRONT -->
         <div class="face-panel" id="face-panel-front">
           <div class="face-row">
             <div class="face-image">
-              <img id="face-front-thumb" class="thumb" alt="Front image preview">
-              <label class="file-label">Image
-                <input id="face-front-file" type="file" accept="image/*">
+              <img class="thumb" id="face-front-thumb" alt="Front" />
+              <label class="file-label">
+                圖片
+                <input id="face-front-file" type="file" accept="image/*" />
               </label>
+              <button class="small-btn" id="face-front-clear" type="button">清除</button>
             </div>
             <div class="face-controls">
               <div class="control-group">
-                <span class="group-label">Margin [mm]</span>
-                <div class="margin-grid">
-                  <label>Left
-                    <input type="number" step="0.5" id="face-front-margin-left" value="0">
-                  </label>
-                  <label>Right
-                    <input type="number" step="0.5" id="face-front-margin-right" value="0">
-                  </label>
-                  <label>Top
-                    <input type="number" step="0.5" id="face-front-margin-top" value="0">
-                  </label>
-                  <label>Bottom
-                    <input type="number" step="0.5" id="face-front-margin-bottom" value="0">
-                  </label>
-                </div>
+                <span class="group-label">Fit</span>
+                <select id="face-front-stretch">
+                  <option value="fill" selected>Fill（撐滿）</option>
+                  <option value="contain">Contain（完整顯示）</option>
+                  <option value="cover">Cover（裁切填滿）</option>
+                  <option value="none">None（原尺寸）</option>
+                </select>
               </div>
               <div class="control-group">
-                <label>Stretch
-                  <select id="face-front-stretch">
-                    <option value="fill">Fill</option>
-                    <option value="uniform">Uniform</option>
-                    <option value="uniformToFill">Uniform to Fill</option>
-                    <option value="none">None</option>
-                  </select>
-                </label>
-                <label>Horizontal Align
+                <span class="group-label">對齊</span>
+                <label>水平
                   <select id="face-front-alignH">
                     <option value="left">Left</option>
                     <option value="center" selected>Center</option>
                     <option value="right">Right</option>
                   </select>
                 </label>
-                <label>Vertical Align
+                <label>垂直
                   <select id="face-front-alignV">
                     <option value="top">Top</option>
                     <option value="center" selected>Center</option>
                     <option value="bottom">Bottom</option>
                   </select>
                 </label>
-                <label>Rotate [°]
-                  <input type="number" step="1" id="face-front-rotate" value="0">
-                </label>
+              </div>
+              <div class="control-group">
+                <span class="group-label">Rotate（°）</span>
+                <input id="face-front-rotate" type="number" step="1" value="0" />
+              </div>
+              <div class="control-group">
+                <span class="group-label">Margins（mm）</span>
+                <div class="margin-grid">
+                  <label>Left<input id="face-front-margin-left" type="number" step="0.5" value="0" /></label>
+                  <label>Right<input id="face-front-margin-right" type="number" step="0.5" value="0" /></label>
+                  <label>Top<input id="face-front-margin-top" type="number" step="0.5" value="0" /></label>
+                  <label>Bottom<input id="face-front-margin-bottom" type="number" step="0.5" value="0" /></label>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Back -->
+        <!-- BACK -->
         <div class="face-panel" id="face-panel-back">
           <div class="face-row">
             <div class="face-image">
-              <img id="face-back-thumb" class="thumb" alt="Back image preview">
-              <label class="file-label">Image
-                <input id="face-back-file" type="file" accept="image/*">
+              <img class="thumb" id="face-back-thumb" alt="Back" />
+              <label class="file-label">
+                圖片
+                <input id="face-back-file" type="file" accept="image/*" />
               </label>
+              <button class="small-btn" id="face-back-clear" type="button">清除</button>
             </div>
             <div class="face-controls">
               <div class="control-group">
-                <span class="group-label">Margin [mm]</span>
-                <div class="margin-grid">
-                  <label>Left
-                    <input type="number" step="0.5" id="face-back-margin-left" value="0">
-                  </label>
-                  <label>Right
-                    <input type="number" step="0.5" id="face-back-margin-right" value="0">
-                  </label>
-                  <label>Top
-                    <input type="number" step="0.5" id="face-back-margin-top" value="0">
-                  </label>
-                  <label>Bottom
-                    <input type="number" step="0.5" id="face-back-margin-bottom" value="0">
-                  </label>
-                </div>
+                <span class="group-label">Fit</span>
+                <select id="face-back-stretch">
+                  <option value="fill" selected>Fill</option>
+                  <option value="contain">Contain</option>
+                  <option value="cover">Cover</option>
+                  <option value="none">None</option>
+                </select>
               </div>
               <div class="control-group">
-                <label>Stretch
-                  <select id="face-back-stretch">
-                    <option value="fill">Fill</option>
-                    <option value="uniform">Uniform</option>
-                    <option value="uniformToFill">Uniform to Fill</option>
-                    <option value="none">None</option>
-                  </select>
-                </label>
-                <label>Horizontal Align
+                <span class="group-label">對齊</span>
+                <label>水平
                   <select id="face-back-alignH">
                     <option value="left">Left</option>
                     <option value="center" selected>Center</option>
                     <option value="right">Right</option>
                   </select>
                 </label>
-                <label>Vertical Align
+                <label>垂直
                   <select id="face-back-alignV">
                     <option value="top">Top</option>
                     <option value="center" selected>Center</option>
                     <option value="bottom">Bottom</option>
                   </select>
                 </label>
-                <label>Rotate [°]
-                  <input type="number" step="1" id="face-back-rotate" value="0">
-                </label>
+              </div>
+              <div class="control-group">
+                <span class="group-label">Rotate（°）</span>
+                <input id="face-back-rotate" type="number" step="1" value="0" />
+              </div>
+              <div class="control-group">
+                <span class="group-label">Margins（mm）</span>
+                <div class="margin-grid">
+                  <label>Left<input id="face-back-margin-left" type="number" step="0.5" value="0" /></label>
+                  <label>Right<input id="face-back-margin-right" type="number" step="0.5" value="0" /></label>
+                  <label>Top<input id="face-back-margin-top" type="number" step="0.5" value="0" /></label>
+                  <label>Bottom<input id="face-back-margin-bottom" type="number" step="0.5" value="0" /></label>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Left -->
+        <!-- LEFT -->
         <div class="face-panel" id="face-panel-left">
           <div class="face-row">
             <div class="face-image">
-              <img id="face-left-thumb" class="thumb" alt="Left image preview">
-              <label class="file-label">Image
-                <input id="face-left-file" type="file" accept="image/*">
+              <img class="thumb" id="face-left-thumb" alt="Left" />
+              <label class="file-label">
+                圖片
+                <input id="face-left-file" type="file" accept="image/*" />
               </label>
+              <button class="small-btn" id="face-left-clear" type="button">清除</button>
             </div>
             <div class="face-controls">
               <div class="control-group">
-                <span class="group-label">Margin [mm]</span>
-                <div class="margin-grid">
-                  <label>Left
-                    <input type="number" step="0.5" id="face-left-margin-left" value="0">
-                  </label>
-                  <label>Right
-                    <input type="number" step="0.5" id="face-left-margin-right" value="0">
-                  </label>
-                  <label>Top
-                    <input type="number" step="0.5" id="face-left-margin-top" value="0">
-                  </label>
-                  <label>Bottom
-                    <input type="number" step="0.5" id="face-left-margin-bottom" value="0">
-                  </label>
-                </div>
+                <span class="group-label">Fit</span>
+                <select id="face-left-stretch">
+                  <option value="fill" selected>Fill</option>
+                  <option value="contain">Contain</option>
+                  <option value="cover">Cover</option>
+                  <option value="none">None</option>
+                </select>
               </div>
               <div class="control-group">
-                <label>Stretch
-                  <select id="face-left-stretch">
-                    <option value="fill">Fill</option>
-                    <option value="uniform">Uniform</option>
-                    <option value="uniformToFill">Uniform to Fill</option>
-                    <option value="none">None</option>
-                  </select>
-                </label>
-                <label>Horizontal Align
+                <span class="group-label">對齊</span>
+                <label>水平
                   <select id="face-left-alignH">
                     <option value="left">Left</option>
                     <option value="center" selected>Center</option>
                     <option value="right">Right</option>
                   </select>
                 </label>
-                <label>Vertical Align
+                <label>垂直
                   <select id="face-left-alignV">
                     <option value="top">Top</option>
                     <option value="center" selected>Center</option>
                     <option value="bottom">Bottom</option>
                   </select>
                 </label>
-                <label>Rotate [°]
-                  <input type="number" step="1" id="face-left-rotate" value="0">
-                </label>
+              </div>
+              <div class="control-group">
+                <span class="group-label">Rotate（°）</span>
+                <input id="face-left-rotate" type="number" step="1" value="0" />
+              </div>
+              <div class="control-group">
+                <span class="group-label">Margins（mm）</span>
+                <div class="margin-grid">
+                  <label>Left<input id="face-left-margin-left" type="number" step="0.5" value="0" /></label>
+                  <label>Right<input id="face-left-margin-right" type="number" step="0.5" value="0" /></label>
+                  <label>Top<input id="face-left-margin-top" type="number" step="0.5" value="0" /></label>
+                  <label>Bottom<input id="face-left-margin-bottom" type="number" step="0.5" value="0" /></label>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Right -->
+        <!-- RIGHT -->
         <div class="face-panel" id="face-panel-right">
           <div class="face-row">
             <div class="face-image">
-              <img id="face-right-thumb" class="thumb" alt="Right image preview">
-              <label class="file-label">Image
-                <input id="face-right-file" type="file" accept="image/*">
+              <img class="thumb" id="face-right-thumb" alt="Right" />
+              <label class="file-label">
+                圖片
+                <input id="face-right-file" type="file" accept="image/*" />
               </label>
+              <button class="small-btn" id="face-right-clear" type="button">清除</button>
             </div>
             <div class="face-controls">
               <div class="control-group">
-                <span class="group-label">Margin [mm]</span>
-                <div class="margin-grid">
-                  <label>Left
-                    <input type="number" step="0.5" id="face-right-margin-left" value="0">
-                  </label>
-                  <label>Right
-                    <input type="number" step="0.5" id="face-right-margin-right" value="0">
-                  </label>
-                  <label>Top
-                    <input type="number" step="0.5" id="face-right-margin-top" value="0">
-                  </label>
-                  <label>Bottom
-                    <input type="number" step="0.5" id="face-right-margin-bottom" value="0">
-                  </label>
-                </div>
+                <span class="group-label">Fit</span>
+                <select id="face-right-stretch">
+                  <option value="fill" selected>Fill</option>
+                  <option value="contain">Contain</option>
+                  <option value="cover">Cover</option>
+                  <option value="none">None</option>
+                </select>
               </div>
               <div class="control-group">
-                <label>Stretch
-                  <select id="face-right-stretch">
-                    <option value="fill">Fill</option>
-                    <option value="uniform">Uniform</option>
-                    <option value="uniformToFill">Uniform to Fill</option>
-                    <option value="none">None</option>
-                  </select>
-                </label>
-                <label>Horizontal Align
+                <span class="group-label">對齊</span>
+                <label>水平
                   <select id="face-right-alignH">
                     <option value="left">Left</option>
                     <option value="center" selected>Center</option>
                     <option value="right">Right</option>
                   </select>
                 </label>
-                <label>Vertical Align
+                <label>垂直
                   <select id="face-right-alignV">
                     <option value="top">Top</option>
                     <option value="center" selected>Center</option>
                     <option value="bottom">Bottom</option>
                   </select>
                 </label>
-                <label>Rotate [°]
-                  <input type="number" step="1" id="face-right-rotate" value="0">
-                </label>
+              </div>
+              <div class="control-group">
+                <span class="group-label">Rotate（°）</span>
+                <input id="face-right-rotate" type="number" step="1" value="0" />
+              </div>
+              <div class="control-group">
+                <span class="group-label">Margins（mm）</span>
+                <div class="margin-grid">
+                  <label>Left<input id="face-right-margin-left" type="number" step="0.5" value="0" /></label>
+                  <label>Right<input id="face-right-margin-right" type="number" step="0.5" value="0" /></label>
+                  <label>Top<input id="face-right-margin-top" type="number" step="0.5" value="0" /></label>
+                  <label>Bottom<input id="face-right-margin-bottom" type="number" step="0.5" value="0" /></label>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Top -->
+        <!-- TOP -->
         <div class="face-panel" id="face-panel-top">
           <div class="face-row">
             <div class="face-image">
-              <img id="face-top-thumb" class="thumb" alt="Top image preview">
-              <label class="file-label">Image
-                <input id="face-top-file" type="file" accept="image/*">
+              <img class="thumb" id="face-top-thumb" alt="Top" />
+              <label class="file-label">
+                圖片
+                <input id="face-top-file" type="file" accept="image/*" />
               </label>
+              <button class="small-btn" id="face-top-clear" type="button">清除</button>
             </div>
             <div class="face-controls">
               <div class="control-group">
-                <span class="group-label">Margin [mm]</span>
-                <div class="margin-grid">
-                  <label>Left
-                    <input type="number" step="0.5" id="face-top-margin-left" value="0">
-                  </label>
-                  <label>Right
-                    <input type="number" step="0.5" id="face-top-margin-right" value="0">
-                  </label>
-                  <label>Top
-                    <input type="number" step="0.5" id="face-top-margin-top" value="0">
-                  </label>
-                  <label>Bottom
-                    <input type="number" step="0.5" id="face-top-margin-bottom" value="0">
-                  </label>
-                </div>
+                <span class="group-label">Fit</span>
+                <select id="face-top-stretch">
+                  <option value="fill" selected>Fill</option>
+                  <option value="contain">Contain</option>
+                  <option value="cover">Cover</option>
+                  <option value="none">None</option>
+                </select>
               </div>
               <div class="control-group">
-                <label>Stretch
-                  <select id="face-top-stretch">
-                    <option value="fill">Fill</option>
-                    <option value="uniform">Uniform</option>
-                    <option value="uniformToFill">Uniform to Fill</option>
-                    <option value="none">None</option>
-                  </select>
-                </label>
-                <label>Horizontal Align
+                <span class="group-label">對齊</span>
+                <label>水平
                   <select id="face-top-alignH">
                     <option value="left">Left</option>
                     <option value="center" selected>Center</option>
                     <option value="right">Right</option>
                   </select>
                 </label>
-                <label>Vertical Align
+                <label>垂直
                   <select id="face-top-alignV">
                     <option value="top">Top</option>
                     <option value="center" selected>Center</option>
                     <option value="bottom">Bottom</option>
                   </select>
                 </label>
-                <label>Rotate [°]
-                  <input type="number" step="1" id="face-top-rotate" value="0">
-                </label>
+              </div>
+              <div class="control-group">
+                <span class="group-label">Rotate（°）</span>
+                <input id="face-top-rotate" type="number" step="1" value="0" />
+              </div>
+              <div class="control-group">
+                <span class="group-label">Margins（mm）</span>
+                <div class="margin-grid">
+                  <label>Left<input id="face-top-margin-left" type="number" step="0.5" value="0" /></label>
+                  <label>Right<input id="face-top-margin-right" type="number" step="0.5" value="0" /></label>
+                  <label>Top<input id="face-top-margin-top" type="number" step="0.5" value="0" /></label>
+                  <label>Bottom<input id="face-top-margin-bottom" type="number" step="0.5" value="0" /></label>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Bottom -->
+        <!-- BOTTOM -->
         <div class="face-panel" id="face-panel-bottom">
           <div class="face-row">
             <div class="face-image">
-              <img id="face-bottom-thumb" class="thumb" alt="Bottom image preview">
-              <label class="file-label">Image
-                <input id="face-bottom-file" type="file" accept="image/*">
+              <img class="thumb" id="face-bottom-thumb" alt="Bottom" />
+              <label class="file-label">
+                圖片
+                <input id="face-bottom-file" type="file" accept="image/*" />
               </label>
+              <button class="small-btn" id="face-bottom-clear" type="button">清除</button>
             </div>
             <div class="face-controls">
               <div class="control-group">
-                <span class="group-label">Margin [mm]</span>
-                <div class="margin-grid">
-                  <label>Left
-                    <input type="number" step="0.5" id="face-bottom-margin-left" value="0">
-                  </label>
-                  <label>Right
-                    <input type="number" step="0.5" id="face-bottom-margin-right" value="0">
-                  </label>
-                  <label>Top
-                    <input type="number" step="0.5" id="face-bottom-margin-top" value="0">
-                  </label>
-                  <label>Bottom
-                    <input type="number" step="0.5" id="face-bottom-margin-bottom" value="0">
-                  </label>
-                </div>
+                <span class="group-label">Fit</span>
+                <select id="face-bottom-stretch">
+                  <option value="fill" selected>Fill</option>
+                  <option value="contain">Contain</option>
+                  <option value="cover">Cover</option>
+                  <option value="none">None</option>
+                </select>
               </div>
               <div class="control-group">
-                <label>Stretch
-                  <select id="face-bottom-stretch">
-                    <option value="fill">Fill</option>
-                    <option value="uniform">Uniform</option>
-                    <option value="uniformToFill">Uniform to Fill</option>
-                    <option value="none">None</option>
-                  </select>
-                </label>
-                <label>Horizontal Align
+                <span class="group-label">對齊</span>
+                <label>水平
                   <select id="face-bottom-alignH">
                     <option value="left">Left</option>
                     <option value="center" selected>Center</option>
                     <option value="right">Right</option>
                   </select>
                 </label>
-                <label>Vertical Align
+                <label>垂直
                   <select id="face-bottom-alignV">
                     <option value="top">Top</option>
                     <option value="center" selected>Center</option>
                     <option value="bottom">Bottom</option>
                   </select>
                 </label>
-                <label>Rotate [°]
-                  <input type="number" step="1" id="face-bottom-rotate" value="0">
-                </label>
+              </div>
+              <div class="control-group">
+                <span class="group-label">Rotate（°）</span>
+                <input id="face-bottom-rotate" type="number" step="1" value="0" />
+              </div>
+              <div class="control-group">
+                <span class="group-label">Margins（mm）</span>
+                <div class="margin-grid">
+                  <label>Left<input id="face-bottom-margin-left" type="number" step="0.5" value="0" /></label>
+                  <label>Right<input id="face-bottom-margin-right" type="number" step="0.5" value="0" /></label>
+                  <label>Top<input id="face-bottom-margin-top" type="number" step="0.5" value="0" /></label>
+                  <label>Bottom<input id="face-bottom-margin-bottom" type="number" step="0.5" value="0" /></label>
+                </div>
               </div>
             </div>
           </div>
